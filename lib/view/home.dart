@@ -1,4 +1,4 @@
-import 'package:cloudocz/view/post.dart';
+import 'package:cloudocz/view/tasks.dart';
 import 'package:cloudocz/view/profile.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const PostScreen(),
+    const TaskScreen(),
     const ProfileScreen(),
   ];
   @override

@@ -1,4 +1,5 @@
 import 'package:cloudocz/controller/login/login_bloc.dart';
+import 'package:cloudocz/controller/task/task_bloc.dart';
 import 'package:cloudocz/data/shared_preference/shared_preference.dart';
 import 'package:cloudocz/view/splash.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
+        BlocProvider<TaskBloc>(create: (context) => TaskBloc()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

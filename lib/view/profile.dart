@@ -88,11 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ? const Icon(Icons.person, size: 40)
                           : null,
                     ),
-                    Positioned(
+                    const Positioned(
                       bottom: 0,
                       right: 0,
                       child: InkWell(
-                        child: const CircleAvatar(
+                        child: CircleAvatar(
                           backgroundColor: Colors.blue,
                           child: Icon(Icons.edit),
                         ),
