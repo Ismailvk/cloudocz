@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "364333717092",
+    "project_id": "cloudocz",
+    "storage_bucket": "cloudocz.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:364333717092:android:5cc31ab8ae236036f0b171",
+        "android_client_info": {
+          "package_name": "com.example.cloudocz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-NpFa3hTIY8wFsi_jBLfnQBZHkG6-VyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
