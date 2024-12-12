@@ -1,4 +1,5 @@
 import 'package:cloudocz/controller/login/login_bloc.dart';
+import 'package:cloudocz/view/home.dart';
 import 'package:cloudocz/view/signup.dart';
 import 'package:cloudocz/widgets/button.dart';
 import 'package:cloudocz/widgets/textfield.dart';
@@ -58,15 +59,27 @@ class LoginScreen extends StatelessWidget {
                     builder: (context, state) {
                       if (state is LoginLoadingState) {
                         return const Center(child: CircularProgressIndicator());
+                      } else if (state is LoginSuccessState) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()),
+                            (route) => false,
+                          );
+                        });
                       }
                       return ButtonWidget(
                         title: 'Login',
                         onPress: () {
                           if (loginKey.currentState!.validate()) {
-                            context.read<LoginBloc>().add(LoginUser(
-                                context: context,
-                                email: emailController.text.trim(),
-                                password: passwordController.text));
+                            Map<String, String> userData = {
+                              "email": emailController.text,
+                              "password": passwordController.text,
+                            };
+                            context
+                                .read<LoginBloc>()
+                                .add(LoginUser(loginData: userData));
                           }
                         },
                       );

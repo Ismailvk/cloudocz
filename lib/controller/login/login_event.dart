@@ -3,10 +3,7 @@ part of 'login_bloc.dart';
 sealed class LoginEvent {}
 
 final class LoginUser extends LoginEvent {
-  final String email;
-  final String password;
-  final BuildContext context;
+  final Map<String, String> loginData;
 
-  LoginUser(
-      {required this.context, required this.email, required this.password});
+  LoginUser({required this.loginData});
 }

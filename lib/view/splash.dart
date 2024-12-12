@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'package:cloudocz/data/shared_preference.dart';
+import 'package:cloudocz/data/shared_preference/shared_preference.dart';
+import 'package:cloudocz/utils/logger.dart';
 import 'package:cloudocz/view/home.dart';
 import 'package:cloudocz/view/login.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ class SplashScreen extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Text(
-          'Cumins360',
+          'CloudocZ',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 26,
@@ -26,7 +26,14 @@ class SplashScreen extends StatelessWidget {
 
   loginCheck(BuildContext context) async {
     await Future.delayed(const Duration(milliseconds: 2500));
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()));
+    final token = SharedPreference.instance.getToken();
+    if (token != null) {
+      Logger.log(token, type: LogType.info);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
+    } else {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
   }
 }

@@ -11,3 +11,9 @@ final class LoginErrorSate extends LoginState {
 
   LoginErrorSate({required this.message});
 }
+
+final class LoginSuccessState extends LoginState {
+  final UserProfile userProfile;
+
+  LoginSuccessState({required this.userProfile});
+}

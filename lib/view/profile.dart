@@ -1,6 +1,5 @@
 import 'dart:io';
-import 'package:cloudocz/data/shared_preference.dart';
-import 'package:cloudocz/view/login.dart';
+import 'package:cloudocz/data/shared_preference/shared_preference.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,10 +17,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    String? profile = SharedPreference.instance.getProfile();
-    if (profile != null) {
-      imageFile = File(profile);
-    }
   }
 
   @override
@@ -97,13 +92,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       bottom: 0,
                       right: 0,
                       child: InkWell(
-                        onTap: () async {
-                          File? selectedImage = await pickImage();
-                          onImageSelected(selectedImage);
-                          await SharedPreference.instance
-                              .storeProfile(selectedImage?.path);
-                          Navigator.pop(context);
-                        },
                         child: const CircleAvatar(
                           backgroundColor: Colors.blue,
                           child: Icon(Icons.edit),
@@ -113,7 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // Additional content can go here
               ],
             ),
           ),
