@@ -9,3 +9,15 @@ final class AddTaskEvent extends TaskEvent {
 
   AddTaskEvent({required this.taskData});
 }
+
+final class DestroyTask extends TaskEvent {
+  final String id;
+  BuildContext context;
+  DestroyTask({required this.id, required this.context});
+}
+
+final class UpdateTask extends TaskEvent {
+  final Map<String, String> updatedData;
+
+  UpdateTask({required this.updatedData});
+}

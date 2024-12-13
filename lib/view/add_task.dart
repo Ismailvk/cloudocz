@@ -1,5 +1,4 @@
 import 'package:cloudocz/controller/task/task_bloc.dart';
-import 'package:cloudocz/main.dart';
 import 'package:cloudocz/utils/validation.dart';
 import 'package:cloudocz/view/home.dart';
 import 'package:cloudocz/widgets/button.dart';
@@ -64,8 +63,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             BlocConsumer<TaskBloc, TaskState>(
               listener: (context, state) {
                 if (state is AddTaskSuccessState) {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => const HomeScreen()));
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                      (route) => false,
+                    );
+                  });
                 }
               },
               builder: (context, state) {

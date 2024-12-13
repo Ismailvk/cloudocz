@@ -119,7 +119,8 @@ class _TaskScreenState extends State<TaskScreen> {
                           if (value == 'edit') {
                             // Perform edit action
                           } else if (value == 'delete') {
-                            // Perform delete action
+                            context.read<TaskBloc>().add(DestroyTask(
+                                id: task.id.toString(), context: context));
                           }
                         },
                         shape: RoundedRectangleBorder(

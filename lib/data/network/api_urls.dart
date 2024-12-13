@@ -3,4 +3,5 @@ class ApiUrls {
   static const loginUser = 'auth/login';
   static const getTasks = 'app/tasks';
   static const addTask = 'app/tasks/store';
+  static const destroyTask = 'app/tasks/destroy';
 }

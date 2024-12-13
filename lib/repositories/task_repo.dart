@@ -14,4 +14,9 @@ class TaskRepo {
     const url = '${ApiUrls.baseUrl}/${ApiUrls.addTask}';
     return ApiService.postApi(taskData, url);
   }
+
+  EitherResponse destroyTask(String id) {
+    String url = '${ApiUrls.baseUrl}/${ApiUrls.destroyTask}/$id';
+    return ApiService.postApi({}, url, token);
+  }
 }
