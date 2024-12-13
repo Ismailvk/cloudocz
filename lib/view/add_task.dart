@@ -1,4 +1,5 @@
 import 'package:cloudocz/controller/task/task_bloc.dart';
+import 'package:cloudocz/model/task_model.dart';
 import 'package:cloudocz/utils/validation.dart';
 import 'package:cloudocz/view/home.dart';
 import 'package:cloudocz/widgets/button.dart';
@@ -7,23 +8,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-class FeedbackScreen extends StatefulWidget {
-  const FeedbackScreen({super.key});
+class AddTaskScreen extends StatefulWidget {
+  final Task? taskData;
+  const AddTaskScreen({super.key, this.taskData});
 
   @override
-  State<FeedbackScreen> createState() => _FeedbackScreenState();
+  State<AddTaskScreen> createState() => _AddTaskScreenState();
 }
 
-class _FeedbackScreenState extends State<FeedbackScreen> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
+class _AddTaskScreenState extends State<AddTaskScreen> {
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.taskData != null) {
+      isEdit = true;
+      final title = widget.taskData!.name;
+      final description = widget.taskData!.description;
+      titleController.text = title;
+      descriptionController.text = description;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Post'),
+        title: Text(isEdit ? 'Edit Task' : 'Add Task'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -37,7 +52,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _descriptionController,
+              controller: descriptionController,
               decoration: const InputDecoration(
                 hintText: 'Enter Description',
                 hintStyle: TextStyle(color: Colors.grey),
@@ -48,7 +63,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             ),
             const SizedBox(height: 16.0),
             TextField(
-              controller: _dateController,
+              controller: dateController,
               readOnly: true,
               decoration: const InputDecoration(
                 hintText: 'Select Date',
@@ -77,9 +92,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 if (state is TaskLoadingState) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                return ButtonWidget(
-                  title: 'Submit Post',
-                  onPress: () => submitPost(),
+                bool isLoading = state is TaskLoadingState;
+                return MyLoadingButton(
+                  isLoading: isLoading,
+                  title: isEdit ? 'Update' : 'Submit',
+                  onTap: () => submitPost(),
                 );
               },
             ),
@@ -99,15 +116,15 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
     if (pickedDate != null) {
       setState(() {
-        _dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+        dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
       });
     }
   }
 
   void submitPost() {
     String title = titleController.text.trim();
-    String description = _descriptionController.text.trim();
-    String deadline = _dateController.text.trim();
+    String description = descriptionController.text.trim();
+    String deadline = dateController.text.trim();
 
     if (title.isEmpty || description.isEmpty || deadline.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -121,7 +138,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         "description": description,
         "deadline": deadline,
       };
-      context.read<TaskBloc>().add(AddTaskEvent(taskData: taskData));
+      isEdit
+          ? context.read<TaskBloc>().add(UpdateTask(
+              updatedData: taskData, id: widget.taskData!.id.toString()))
+          : context.read<TaskBloc>().add(AddTaskEvent(taskData: taskData));
     }
   }
 }

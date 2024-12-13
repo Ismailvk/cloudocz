@@ -19,4 +19,9 @@ class TaskRepo {
     String url = '${ApiUrls.baseUrl}/${ApiUrls.destroyTask}/$id';
     return ApiService.postApi({}, url, token);
   }
+
+  EitherResponse updateTask(Map<String, String> updatedkData, String id) {
+    String url = '${ApiUrls.baseUrl}/${ApiUrls.updateTask}/$id';
+    return ApiService.postApi(updatedkData, url, token);
+  }
 }

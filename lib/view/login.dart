@@ -18,6 +18,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -55,23 +56,26 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: size.height * 0.03),
-                  BlocBuilder<LoginBloc, LoginState>(
-                    builder: (context, state) {
-                      if (state is LoginLoadingState) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is LoginSuccessState) {
+                  BlocConsumer<LoginBloc, LoginState>(
+                    listener: (context, state) {
+                      if (state is LoginSuccessState) {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
+                              builder: (context) => const HomeScreen(),
+                            ),
                             (route) => false,
                           );
                         });
                       }
-                      return ButtonWidget(
+                    },
+                    builder: (context, state) {
+                      bool isloading = state is LoginLoadingState;
+                      return MyLoadingButton(
+                        isLoading: isloading,
                         title: 'Login',
-                        onPress: () {
+                        onTap: () {
                           if (loginKey.currentState!.validate()) {
                             Map<String, String> userData = {
                               "email": emailController.text,
@@ -91,16 +95,20 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       const Text("Don't have an account ? "),
                       GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => SignupScreen())),
-                          child: const Center(
-                              child: Text(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => SignupScreen(),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
                             'Signup',
                             style: TextStyle(color: Colors.blue),
-                          ))),
+                          ),
+                        ),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),

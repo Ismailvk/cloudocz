@@ -82,9 +82,10 @@ class SignupScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: size.height * 0.03),
-                    ButtonWidget(
+                    MyLoadingButton(
+                      isLoading: false,
                       title: 'Create Account',
-                      onPress: () {},
+                      onTap: () {},
                     ),
                     SizedBox(height: size.height * 0.02),
                     Row(

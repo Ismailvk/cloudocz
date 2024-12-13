@@ -17,7 +17,8 @@ final class DestroyTask extends TaskEvent {
 }
 
 final class UpdateTask extends TaskEvent {
+  final String id;
   final Map<String, String> updatedData;
 
-  UpdateTask({required this.updatedData});
+  UpdateTask({required this.updatedData, required this.id});
 }

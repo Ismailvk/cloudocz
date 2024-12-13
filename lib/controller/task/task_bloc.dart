@@ -11,6 +11,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<GetTasksEvent>(getTasksEvent);
     on<AddTaskEvent>(addTaskData);
     on<DestroyTask>(destroyTask);
+    on<UpdateTask>(updateTask);
   }
 
   FutureOr<void> getTasksEvent(
@@ -54,6 +55,19 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       });
     } catch (e) {
       TaskErrorState(message: e.toString());
+    }
+  }
+
+  FutureOr<void> updateTask(UpdateTask event, Emitter<TaskState> emit) async {
+    final data = await TaskRepo().updateTask(event.updatedData, event.id);
+    try {
+      data.fold((error) {
+        emit(TaskErrorState(message: error.message.toString()));
+      }, (response) {
+        emit(AddTaskSuccessState());
+      });
+    } catch (e) {
+      emit(TaskErrorState(message: e.toString()));
     }
   }
 }

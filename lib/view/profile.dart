@@ -1,7 +1,8 @@
-import 'dart:io';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloudocz/data/shared_preference/shared_preference.dart';
+import 'package:cloudocz/view/login.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,131 +12,113 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ImagePicker picker = ImagePicker();
-  File? imageFile;
+  String? name = '';
+  String? position = '';
+  String? image = '';
 
   @override
   void initState() {
     super.initState();
+    image = SharedPreference.instance.getImage();
+    name = SharedPreference.instance.getName();
+    position = SharedPreference.instance.getPosition();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Profile',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
+        backgroundColor: Colors.indigo,
+        elevation: 5,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: imageFile != null ? FileImage(imageFile!) : null,
-              child:
-                  imageFile == null ? const Icon(Icons.person, size: 40) : null,
-            ),
-            const SizedBox(height: 5),
-            Text("auth.currentUser!.displayName!"),
-            Text("auth.currentUser!.email!"),
-            const SizedBox(height: 20),
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Update Profile'),
-              onTap: () {
-                showUpdateProfileBottomSheet(context, (File? image) {
-                  setState(() {
-                    imageFile = image;
-                  });
-                });
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                showPopup(context);
-              },
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage(image!),
+                backgroundColor: Colors.grey[200],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                name ?? 'Guest User',
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              Text(
+                position ?? 'No Position',
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 30),
+              ListTile(
+                tileColor: Colors.redAccent.withOpacity(0.1),
+                leading: const Icon(Icons.logout, color: Colors.redAccent),
+                title: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.redAccent,
+                  ),
+                ),
+                onTap: () => _showLogoutDialog(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void showUpdateProfileBottomSheet(
-      BuildContext context, Function(File?) onImageSelected) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: 120,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage:
-                          imageFile != null ? FileImage(imageFile!) : null,
-                      child: imageFile == null
-                          ? const Icon(Icons.person, size: 40)
-                          : null,
-                    ),
-                    const Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: InkWell(
-                        child: CircleAvatar(
-                          backgroundColor: Colors.blue,
-                          child: Icon(Icons.edit),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<File?> pickImage() async {
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      return File(pickedFile.path);
-    }
-    return null;
-  }
-
-  void showPopup(BuildContext context) {
+  void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmation'),
-          content: const Text('Are you sure you want to proceed?'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: Row(
+            children: const [
+              Icon(Icons.warning, color: Colors.redAccent),
+              SizedBox(width: 8),
+              Text('Logout Confirmation'),
+            ],
+          ),
+          content: const Text(
+            'Are you sure you want to logout?',
+            style: TextStyle(fontSize: 16),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('OK'),
+            ElevatedButton(
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              onPressed: () async {
+                await SharedPreference.instance.clearAll();
+                Navigator.of(context).pop(); // Close the dialog
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              child: const Text('Logout'),
             ),
           ],
         );

@@ -22,16 +22,23 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Post'),
+        title: Text(
+          'Tasks',
+          style: Theme.of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(color: Colors.white),
+        ),
+        backgroundColor: Colors.indigo,
         actions: [
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => FeedbackScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AddTaskScreen()));
               },
-              child: Icon(Icons.add, size: 34),
+              child: const Icon(Icons.add, size: 34, color: Colors.white),
             ),
           )
         ],
@@ -117,7 +124,11 @@ class _TaskScreenState extends State<TaskScreen> {
                       trailing: PopupMenuButton(
                         onSelected: (value) {
                           if (value == 'edit') {
-                            // Perform edit action
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AddTaskScreen(taskData: task)));
                           } else if (value == 'delete') {
                             context.read<TaskBloc>().add(DestroyTask(
                                 id: task.id.toString(), context: context));
